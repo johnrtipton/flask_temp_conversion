@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flask import render_template
 
-from temp_converter import TempConverter
+from temp_check.temp_converter import TempConverter
 
 app = Flask(__name__,  static_url_path='/static')
 api = Api(app)
