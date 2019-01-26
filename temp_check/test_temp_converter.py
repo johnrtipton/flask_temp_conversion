@@ -1,4 +1,4 @@
-from temp_converter import TempConverter
+from .temp_converter import TempConverter
 
 
 def test_correct_answers():
