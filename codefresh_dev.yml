@@ -1,0 +1,45 @@
+version: '1.0'
+
+stages:
+- build
+- test
+- push
+- deploy
+
+steps:
+  BuildingDockerImage:
+    title: Building Docker Image
+    type: build
+    stage: build
+    image_name: johnrtipton/flasktempconversion
+    working_directory: ./
+    tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+    dockerfile: Dockerfile
+
+  RunUnitTests:
+    title: Running Unit tests
+    stage: test
+    image: ${{BuildingDockerImage}}
+    commands:
+    - pip install pytest
+    - python -m pytest
+
+  PushingToECR:
+    type: push
+    title: Pusing to ECR
+    candidate: ${{BuildingDockerImage}}
+    tags:
+    - latest
+    - '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+    image_name: myapp_dev
+    fail_fast: false
+    registry: ecr
+
+  DeployToECS:
+    title: Deploying to ECS
+    stage: deploy
+    image: ${{BuildingDockerImage}}
+    commands:
+      - cd deploy
+      - pip install -r requirements.txt
+      - python ecs-deploy.py deploy --cluster=fargate --service=myapp_dev --image=226671803964.dkr.ecr.us-east-1.amazonaws.com/myapp_dev:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}

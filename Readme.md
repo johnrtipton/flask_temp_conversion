@@ -57,3 +57,65 @@ docker run -d --rm -it -p 5000:5000 --name fask_temp_check_1 fask_temp_check
 ```
 
 Then browse to http://127.0.0.1:5000/
+
+
+
+# Resources
+
+Terraform Buildout
+
+http://fedulov.website/2018/02/18/terraform-deploying-containers-on-aws-fargate/
+
+https://github.com/mattghali/terraform-fargate/commits/master
+
+
+
+Terraform update when code pushed
+
+https://github.com/alex/ecs-terraform
+
+- Checkout newer version:
+
+  https://github.com/silinternational/ecs-deploy
+
+
+
+Scaling
+
+https://aws.amazon.com/blogs/compute/automatic-scaling-with-amazon-ecs/
+
+
+
+# Issues
+
+- When running terraform apply, the ecr repository may already exist, to get around this you can import the existing resource.
+
+  ```bash
+  terraform import aws_ecr_repository.myapp myapp
+  ```
+
+  
+
+  To create the ecr when it does not exist.
+
+- ```bash
+  terraform apply --target aws_ecr_repository.myapp 
+  ```
+
+  **But, I think I will not let terraform manage it and create it manually**
+
+- Terraform sees that the task definition has changed and wants to set it back during terraform apply.  I guess this wouldn't technically be a problem, as the original task definition is set to latest, and each image is pushed with both the release and latest as tags.
+
+  Solved this by adding:
+
+  ```terraform
+  data "aws_ecs_task_definition" "myapp" {
+    task_definition = "${aws_ecs_task_definition.myapp.family}"
+  }
+  
+    task_definition = "${replace(aws_ecs_task_definition.myapp.arn, "/:\\d*$/", "")}:${max("${aws_ecs_task_definition.myapp.revision}", "${data.aws_ecs_task_definition.myapp.revision}")}"
+  
+  ```
+
+  
+
