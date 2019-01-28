@@ -111,7 +111,8 @@
     $(document).ready(function () {
 
         // Listen for Check button click
-        $("#id_check").click(function () {
+        $("#id_check").click(function (event) {
+            event.preventDefault();
             $.post("/check_temp/", {
                 starting_value: $('#starting_value').val(),
                 desired_unit: $('#desired_unit').val(),
