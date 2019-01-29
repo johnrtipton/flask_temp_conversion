@@ -21,8 +21,9 @@ steps:
     stage: test
     image: ${{BuildingDockerImage}}
     commands:
-    - pip install pytest
-    - python -m pytest
+    - pip install pytest coverage allure-pytest
+    - coverage run -m pytest --alluredir=$CF_VOLUME_PATH/allure-results
+    - coverage report
 
   PushingToECR:
     type: push
@@ -34,6 +35,15 @@ steps:
     image_name: myapp_dev
     fail_fast: false
     registry: ecr
+
+
+ unit_test_reporting_step:
+   title: Generate test reporting
+   image: codefresh/cf-docker-test-reporting
+   working_directory: '${{CF_VOLUME_PATH}}/'
+   environment:
+     - BUCKET_NAME=test-reports.trylinux.org
+     - CF_STORAGE_INTEGRATION=report_bucket
 
   DeployToECS:
     title: Deploying to ECS
