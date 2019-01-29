@@ -29,9 +29,6 @@ class TempConverter(object):
     >>> TempConverter.check_conversion(starting_value='84.2 Fahrenheit', student_answer=543.5, desired_unit='Rankine')
     """
 
-    def __init__(self):
-        pass
-
     @classmethod
     def check_conversion(cls, starting_value=None, student_answer=None, desired_unit=None):
         """

@@ -15,6 +15,9 @@ def test_correct_answers():
     assert TempConverter.check_conversion(
         starting_value='444.5 Rankine', student_answer=-26, desired_unit='Celsius') == 'correct'
 
+    assert TempConverter.check_conversion(
+        starting_value='444.5 Kelvin', student_answer=444.5, desired_unit='Kelvin') == 'correct'
+
 
 def test_incorrect_answers():
     """Test incorrect answers."""
