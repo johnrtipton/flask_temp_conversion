@@ -25,6 +25,7 @@ steps:
     - pip install pytest coverage allure-pytest
     - coverage run -m pytest --alluredir=$CF_VOLUME_PATH/allure-results
     - coverage report
+    - coverage html -d $CF_VOLUME_PATH/coverage
 
   UnitTestReporting:
     title: Generate test reporting
@@ -34,6 +35,11 @@ steps:
     environment:
       - BUCKET_NAME=test-reports.trylinux.org
       - CF_STORAGE_INTEGRATION=report_bucket
+      - REPORT_DIR.0=coverage
+      - REPORT_INDEX_FILE.0=index.html
+      - REPORT_TYPE.0=coverage
+      - ALLURE_DIR.1=allure-results
+      - REPORT_TYPE.1=allure
 
   PushingToECR:
     type: push
