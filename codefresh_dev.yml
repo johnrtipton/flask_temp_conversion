@@ -16,9 +16,9 @@ steps:
     working_directory: ./
     tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
     dockerfile: Dockerfile
-    build_args:
-      - COMMIT_SHA=${{CF_SHORT_REVISION}}
-      - COMMIT_BRANCH=${{CF_BRANCH_TAG_NORMALIZED}}
+    build-arguments:
+      - COMMIT=${{CF_SHORT_REVISION}}
+      - BRANCH=${{CF_BRANCH_TAG_NORMALIZED}}
 
   ParallelTests:
     title: Running Tests
