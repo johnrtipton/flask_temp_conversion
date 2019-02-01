@@ -20,12 +20,24 @@ steps:
   RunUnitTests:
     title: Running Unit tests
     stage: test
-    image: ${{BuildingDockerImage}}
-    commands:
-    - pip install pytest coverage allure-pytest
-    - coverage run -m pytest --alluredir=$CF_VOLUME_PATH/allure-results
-    - coverage report
-    - coverage html -d $CF_VOLUME_PATH/coverage
+    success_criteria:
+      steps:
+        only:
+          - UnitTest
+    ParallelTests:
+      type: parallel
+      steps:
+        UnitTest:
+          image: ${{BuildingDockerImage}}
+          commands:
+          - pip install pytest coverage allure-pytest
+          - coverage run -m pytest --alluredir=$CF_VOLUME_PATH/allure-results
+          - coverage report
+          - coverage html -d $CF_VOLUME_PATH/coverage
+        LintTest:
+          image: ${{BuildingDockerImage}}
+            commands:
+              - pip install pytest pylama pylama_pylint
 
   UnitTestReporting:
     title: Generate test reporting
