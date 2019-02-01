@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from flask import render_template
+import os
 
 from temp_check.temp_converter import TempConverter
 
@@ -38,7 +39,9 @@ api.add_resource(FavIcon, '/favicon.ico')
 
 @app.route('/')
 def index(name=None):
-    return render_template('index.html', name=name)
+    branch = os.environ.get('COMMIT_BRANCH', '')
+    build = os.environ.get('COMMIT_SHA', '')
+    return render_template('index.html', name=name, branch=branch, build=build)
 
 
 if __name__ == '__main__':
