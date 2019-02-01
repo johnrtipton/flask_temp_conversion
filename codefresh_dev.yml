@@ -17,29 +17,29 @@ steps:
     tag: '${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
     dockerfile: Dockerfile
 
-  RunTests:
+  ParallelTests:
     title: Running Tests
+    type: parallel
     stage: test
-    image: ${{BuildingDockerImage}}
     success_criteria:
       steps:
         only:
           - RunUnitTest
-    ParallelTests:
-      type: parallel
-      image: ${{BuildingDockerImage}}
-      steps:
-        RunUnitTest:
-          title: Run Unit Test
-          commands:
-            - pip install pytest coverage allure-pytest
-            - coverage run -m pytest --alluredir=$CF_VOLUME_PATH/allure-results
-            - coverage report
-            - coverage html -d $CF_VOLUME_PATH/coverage
-        LintTest:
-          title: Run Lint Checks
-          commands:
-            - pip install pytest pylama pylama_pylint
+    steps:
+      RunUnitTest:
+        title: Run Unit Test
+        image: ${{BuildingDockerImage}}
+        commands:
+          - pip install pytest coverage allure-pytest
+          - coverage run -m pytest --alluredir=$CF_VOLUME_PATH/allure-results
+          - coverage report
+          - coverage html -d $CF_VOLUME_PATH/coverage
+      LintTest:
+        title: Run Lint Checks
+        image: ${{BuildingDockerImage}}
+        commands:
+          - pip install pytest pylama pylama_pylint
+          - pytest --pylama
 
   UnitTestReporting:
     title: Generate test reporting
