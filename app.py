@@ -26,6 +26,7 @@ class CheckTemp(Resource):
             )
         }
 
+
 class FavIcon(Resource):
     def get(self):
         return {}
