@@ -36,8 +36,8 @@ steps:
           - coverage html -d $CF_VOLUME_PATH/coverage
         LintTest:
           image: ${{BuildingDockerImage}}
-            commands:
-              - pip install pytest pylama pylama_pylint
+          commands:
+          - pip install pytest pylama pylama_pylint
 
   UnitTestReporting:
     title: Generate test reporting
